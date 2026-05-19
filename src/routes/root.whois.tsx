@@ -7,6 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { categoryLabel } from "@/lib/categories";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
+import { adminDeleteProblem } from "@/lib/admin.functions";
+
+const CREDS_KEY = "jamiatim_admin_creds";
+
 
 // Admin route accessible only by typing /root/whois in the URL.
 export const Route = createFileRoute("/root/whois")({
@@ -30,6 +34,7 @@ function AdminPage() {
     e.preventDefault();
     if (u === "root" && p === "root") {
       sessionStorage.setItem(STORAGE_KEY, "1");
+      sessionStorage.setItem(CREDS_KEY, JSON.stringify({ u, p }));
       setAuthed(true);
     } else {
       toast.error("Noto'g'ri ma'lumotlar");
@@ -76,10 +81,14 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
 
   const remove = async (id: string) => {
     if (!confirm("O'chirilsinmi?")) return;
-    const { error } = await supabase.from("problems").delete().eq("id", id);
-    if (error) return toast.error("RLS o'chirishga ruxsat bermadi. Lovable Cloud panelidan o'chiring.");
-    toast.success("O'chirildi");
-    load();
+    try {
+      const creds = JSON.parse(sessionStorage.getItem(CREDS_KEY) ?? "{}");
+      await adminDeleteProblem({ data: { username: creds.u, password: creds.p, problemId: id } });
+      toast.success("O'chirildi");
+      load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Xatolik");
+    }
   };
 
   return (

@@ -14,7 +14,121 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      problems: {
+        Row: {
+          age: number
+          category: string
+          created_at: string
+          fullname: string
+          id: string
+          problem: string
+          solution: string | null
+          user_id: string
+        }
+        Insert: {
+          age: number
+          category: string
+          created_at?: string
+          fullname: string
+          id?: string
+          problem: string
+          solution?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: number
+          category?: string
+          created_at?: string
+          fullname?: string
+          id?: string
+          problem?: string
+          solution?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      reactions: {
+        Row: {
+          created_at: string
+          id: string
+          problem_id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          problem_id: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          problem_id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_problem_id_fkey"
+            columns: ["problem_id"]
+            isOneToOne: false
+            referencedRelation: "problems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      solutions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          problem_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          problem_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          problem_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "solutions_problem_id_fkey"
+            columns: ["problem_id"]
+            isOneToOne: false
+            referencedRelation: "problems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

@@ -27,11 +27,17 @@ function Index() {
     const [{ data: p }, { data: r }, { data: s }] = await Promise.all([
       supabase.from("problems").select("*").order("created_at", { ascending: false }),
       supabase.from("reactions").select("problem_id, user_id").eq("type", "like"),
-      supabase.from("solutions").select("*, profiles(username)").order("created_at", { ascending: true }),
+      supabase.from("solutions").select("*").order("created_at", { ascending: true }),
     ]);
+    const userIds = Array.from(new Set((s ?? []).map((x: any) => x.user_id)));
+    let profMap = new Map<string, string>();
+    if (userIds.length) {
+      const { data: profs } = await supabase.from("profiles").select("id, username").in("id", userIds);
+      profMap = new Map((profs ?? []).map((pr: any) => [pr.id, pr.username]));
+    }
     setProblems((p ?? []) as Problem[]);
     setReactions((r ?? []) as any);
-    setSolutions((s ?? []) as any);
+    setSolutions(((s ?? []) as any).map((x: any) => ({ ...x, profiles: { username: profMap.get(x.user_id) ?? "anonim" } })));
     setLoading(false);
   };
 

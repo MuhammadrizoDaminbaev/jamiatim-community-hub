@@ -17,6 +17,7 @@ export type Database = {
       problems: {
         Row: {
           age: number
+          categories: string[]
           category: string
           created_at: string
           fullname: string
@@ -27,6 +28,7 @@ export type Database = {
         }
         Insert: {
           age: number
+          categories?: string[]
           category: string
           created_at?: string
           fullname: string
@@ -37,6 +39,7 @@ export type Database = {
         }
         Update: {
           age?: number
+          categories?: string[]
           category?: string
           created_at?: string
           fullname?: string
@@ -96,6 +99,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      solution_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          solution_id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          solution_id: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          solution_id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
       }
       solutions: {
         Row: {
